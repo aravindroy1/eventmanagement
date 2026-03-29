@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: ticket-container
-          image: aravindroy1/ticket-service:latest
+          image: team3kubectl/ticket-service:v1.1.0
 
           ports:
             - containerPort: 8005
@@ -42,16 +42,4 @@ spec:
               memory: "256Mi"
               cpu: "200m"
 
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8005
-            initialDelaySeconds: 10
-            periodSeconds: 10
-
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 8005
-            initialDelaySeconds: 5
-            periodSeconds: 5
+          
