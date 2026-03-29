@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-deployment
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: ticket
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
+  template:
+    metadata:
+      labels:
+        app: ticket
+
+    spec:
+      containers:
+        - name: ticket-container
+          image: aravindroy1/ticket-service:latest
+
+          ports:
+            - containerPort: 8005
+
+          envFrom:
+            - configMapRef:
+                name: ticket-config
+            - secretRef:
+                name: ticket-secret
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8005
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8005
+            initialDelaySeconds: 5
+            periodSeconds: 5
